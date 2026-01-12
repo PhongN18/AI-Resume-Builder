@@ -9,8 +9,6 @@ import path from "node:path";
 export async function saveResume(values: ResumeValues) {
 	const { id } = values;
 
-	console.log("new saved", values)
-
 	const { photo, workExperiences, education, skills, ...resumeValues } = resumeSchema.parse(values)
 
 	const { userId } = await auth()
@@ -35,7 +33,8 @@ export async function saveResume(values: ResumeValues) {
 		}
 
 		const blob = await put(`resume_photos/${path.extname(photo.name)}`, photo, {
-			access: "public"
+			access: "public",
+			allowOverwrite: true,
 		})
 
 		newPhotoUrl = blob.url

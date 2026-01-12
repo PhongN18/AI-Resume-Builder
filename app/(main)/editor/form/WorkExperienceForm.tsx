@@ -27,6 +27,7 @@ import {
 import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities"
 import {cn} from "@/lib/utils";
+import GenerateWorkExperienceButton from "@/app/(main)/editor/form/GenerateWorkExperienceButton";
 
 const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 	const form = useForm<WorkExperienceValues>({
@@ -71,6 +72,8 @@ const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 			return arrayMove(fields, oldIndex, newIndex)
 		}
 	}
+
+	console.log(form)
 
 	return (
 		<div className="max-w-xl mx-auto space-y-6">
@@ -151,6 +154,13 @@ function WorkExperienceItem({ form, index, remove, id }: WorkExperienceItemProps
 				<GripHorizontal className="size-5 cursor-grab text-muted-foreground focus:outline-none"
 					{...attributes}
 					{...listeners}
+				/>
+			</div>
+			<div className="flex justify-center">
+				<GenerateWorkExperienceButton
+					onWorkExperienceGenerated={exp =>
+						form.setValue(`workExperiences.${index}`, exp)
+					}
 				/>
 			</div>
 			<FormField

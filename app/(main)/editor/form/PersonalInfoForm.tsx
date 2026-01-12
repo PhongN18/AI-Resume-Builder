@@ -36,9 +36,11 @@ const PersonalInfoForm = ({resumeData, setResumeData}: EditorFormProps) => {
 		if (!isValid) return;
 		if (!watchedValues) return;
 
+		const { photo, ...nonPhotoValues } = watchedValues;
+
 		setResumeData(prev => ({
 			...prev,
-			...watchedValues,
+			...nonPhotoValues,
 		}));
 	}, [watchedValues, isValid, setResumeData]);
 
@@ -69,6 +71,11 @@ const PersonalInfoForm = ({resumeData, setResumeData}: EditorFormProps) => {
 											onChange={(e) => {
 												const file = e.target.files?.[0];
 												fieldValues.onChange(file);
+
+												setResumeData(prev => ({
+													...prev,
+													photo: file ?? null,
+												}));
 											}}
 										/>
 									</FormControl>
