@@ -106,3 +106,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  #resumePreviewerContent {
+    zoom: 1 !important;
+    padding: 0;
+  }
+
+}
+
+#resumePreviewerContent {
+  font-family: Inter;
+}
+
+@page {
+  size: A4;
+  margin: 0.6cm;
+}

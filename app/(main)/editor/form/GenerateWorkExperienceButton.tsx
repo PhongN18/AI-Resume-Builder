@@ -1,8 +1,11 @@
+'use client'
+
 import {GenerateWorkExperienceInput, generateWorkExperienceSchema, WorkExperience} from "@/lib/validation";
 import {useState} from "react";
 import {toast} from 'sonner'
 import {Button} from "@/components/ui/button";
-import {Form, WandSparklesIcon} from "lucide-react";
+import {WandSparklesIcon} from "lucide-react";
+import { Form } from "@/components/ui/form";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {generateWorkExperience} from "@/app/(main)/editor/form/actions";
@@ -89,6 +92,7 @@ function InputDialog ({open, onOpenChange, onWorkExperienceGenerated}: InputDial
 									<Textarea
 										{...field}
 										placeholder={`e.g. "from nov 2019 to dec 2020 i worked at google as a software engineer, my tasks were..."`}
+										className="placeholder:text-sm"
 										autoFocus
 									/>
 								</FormControl>

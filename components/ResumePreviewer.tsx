@@ -9,10 +9,11 @@ import {BorderStyles} from "@/app/(main)/editor/BorderStyleButton";
 
 interface ResumePreviewProps {
 	resumeData: ResumeValues;
+	contentRef?: React.Ref<HTMLDivElement>;
 	className?: string;
 }
 
-const ResumePreviewer = ({resumeData, className}: ResumePreviewProps) => {
+const ResumePreviewer = ({resumeData, contentRef, className}: ResumePreviewProps) => {
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const { w } = useDimensions(containerRef)
@@ -23,10 +24,12 @@ const ResumePreviewer = ({resumeData, className}: ResumePreviewProps) => {
 			ref={containerRef}
 		>
 			<div
-				className={cn("space-y-6 p-6", !w && "invisible")}
+				className={cn("space-y-6 p-6 break-words", !w && "invisible")}
 				style={{
 					zoom: (1/794) * w
 				}}
+				ref={contentRef}
+				id="resumePreviewerContent"
 			>
 				<PersonalInfoHeader resumeData={resumeData} />
 				<SummarySection resumeData={resumeData} />
@@ -99,7 +102,7 @@ function SummarySection({resumeData}: ResumeSectionProps) {
 			<hr className="border-2" style={{ borderColor: colorHex }}/>
 			<div className="space-y-3 break-inside-avoid">
 				<p className="text-lg font-semibold" style={{ color: colorHex }}>Professional profile</p>
-				<div className="whitespace-pre-line text-sm">{summary}</div>
+				<div className="whitespace-pre-line break-words text-sm">{summary}</div>
 			</div>
 		</>
 	)
@@ -130,7 +133,7 @@ function WorkExperiencesSection({resumeData}: ResumeSectionProps) {
 							)}
 						</div>
 						<p className="text-xs font-semibold">{exp.company}</p>
-						<div className="whitespace-pre-line text-xs">{exp.description}</div>
+						<div className="whitespace-pre-line break-words text-xs">{exp.description}</div>
 					</div>
 				))}
 			</div>

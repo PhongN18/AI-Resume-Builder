@@ -85,18 +85,29 @@ export async function generateWorkExperience(input: GenerateWorkExperienceInput)
 	const {description} = generateWorkExperienceSchema.parse(input);
 
 	const systemMessage = `
-	You are a job resume generator AI. Your task is to generate a single work experience entry based on the user input. Your response must be adhere to the following structure. You can omit fields if they can't be inferred from from the provided data but don't add any new ones. 
-	
-	Job title: <job title>
-	Company: <company name>
-	Start date: <format: YYYY-MM-DD> (only if provided)
-	End date: <format: YYYY-MM-DD> (only if provided)
-	Description: <an optimized description in bullet format, might be inferred from the job title>
+		You are a resume assistant.
+		Given a short, messy user description, generate ONE work experience entry.
+		
+		Return ONLY valid JSON, no markdown, no extra text.
+		Schema:
+		{
+		  "position": string,
+		  "company": string,
+		  "startDate": "YYYY-MM-DD" | '',
+		  "endDate": "YYYY-MM-DD" | '',
+		  "description": string // 3-5 bullet points, add newline and leading dash to separate
+		}
+		
+		Rules:
+		- Use only information from the user description. Do NOT invent technologies, companies, or dates.
+		- If start/end date is not explicitly present, set it to null.
+		- Bullet points should start with strong action verbs and be concise.
 	`.trim();
 
 	const userMessage = `
-		Please provide a work experience entry from this desctription: ${description}
-	`
+		User description:
+		${description}
+	`.trim();
 
 	const completion = await openai.chat.completions.create({
 		model: "gpt-4o-mini", // see pricing section below
@@ -105,7 +116,7 @@ export async function generateWorkExperience(input: GenerateWorkExperienceInput)
 			{ role: "user", content: userMessage },
 		],
 		temperature: 0.4,
-		max_completion_tokens: 140,
+		max_completion_tokens: 180,
 	});
 
 	const  aiResponse = completion.choices[0].message.content
@@ -134,11 +145,7 @@ export async function generateWorkExperience(input: GenerateWorkExperienceInput)
 
 	console.log("Exact cost (USD):", exact);
 	console.log("aiResponse", aiResponse)
-	return {
-		position: aiResponse.match(/Job title: (.*)/)?.[1] || "",
-		company: aiResponse.match(/Company: (.*)/)?.[1] || "",
-		description: (aiResponse.match(/Description: ([\s\S]*)/)?.[1] || "").trim(),
-		startDate: aiResponse.match(/Start date: (\d{4}-\d{2}-\d{2)/)?.[1],
-		endDate: aiResponse.match(/End date: (\d{4}-\d{2}-\d{2)/)?.[1],
-	} satisfies WorkExperience
+	const result = JSON.parse(aiResponse) satisfies WorkExperience
+	console.log(result)
+	return result
 }

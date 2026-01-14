@@ -27,7 +27,6 @@ const BorderStyleButton = ({borderStyle, onChange}: BorderStyleButtonProps) => {
 
 	return (
 		<Button
-			variant="outline"
 			size="icon"
 			title="Change border style"
 			onClick={handleClick}

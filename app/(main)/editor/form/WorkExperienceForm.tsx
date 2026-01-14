@@ -33,8 +33,14 @@ const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 	const form = useForm<WorkExperienceValues>({
 		resolver: zodResolver(workExperienceSchema),
 		defaultValues: {
-			workExperiences: resumeData.workExperiences || []
-		}
+			workExperiences: (resumeData.workExperiences ?? []).map(exp => ({
+				position: exp.position ?? "",
+				company: exp.company ?? "",
+				startDate: exp.startDate ?? "",
+				endDate: exp.endDate ?? "",
+				description: exp.description ?? "",
+			})),
+		},
 	})
 
 	const watchedValues = useWatch({ control: form.control });
@@ -43,6 +49,8 @@ const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 	useEffect(() => {
 		if (!isValid) return;
 		if (!watchedValues) return;
+
+		console.log("watchedValues.workExperiences", watchedValues.workExperiences);
 
 		setResumeData(prev => ({
 			...prev,
@@ -72,8 +80,6 @@ const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 			return arrayMove(fields, oldIndex, newIndex)
 		}
 	}
-
-	console.log(form)
 
 	return (
 		<div className="max-w-xl mx-auto space-y-6">
