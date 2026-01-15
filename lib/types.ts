@@ -1,5 +1,5 @@
 import {ResumeValues} from "@/lib/validation";
-import type { Prisma } from "@/lib/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export interface EditorFormProps {
 	resumeData: ResumeValues;
