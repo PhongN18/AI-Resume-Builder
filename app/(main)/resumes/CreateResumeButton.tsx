@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import usePremiumModal from "@/hooks/usePremiumModal";
 import React from "react";
