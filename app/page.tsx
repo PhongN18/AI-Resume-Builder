@@ -5,6 +5,31 @@ import Link from "next/link";
 import {Button} from "@/components/ui/button";
 
 const Home = () => {
+	console.log(`
+  ****   ****
+ ****** ******
+***************
+ *************
+  ***********
+   *********
+    *******
+     *****
+      ***
+       *
+     _
+    /_/
+   __    _   _  _   _
+  /  \\  | \\ | || |_| |
+ / /\\ \\ |  \\| ||  _  |
+/_/  \\_\\|_|\\__||_| |_|
+
+             _       _ 
+ ___   _   _/ / ___/ / _   _   ____
+|   \\ | | |  / / _  / | \\ | | /    \\
+| |) )| \\_/ | ( (_) ) |  \\| |(     __
+|___/  \\___/   \\___/  |_|\\__| \\____/
+	`)
+
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-cển gap-6 bg-gray-100 px-5 py-12 text-gray-900 text-center md:text-start md:flex-row lg:gap-12">
 			<div className="max-w-prose">

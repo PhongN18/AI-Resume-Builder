@@ -4,16 +4,43 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/
 import {Check} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import usePremiumModal from "@/hooks/usePremiumModal";
+import {toast} from "sonner"
+import {useState} from "react";
+import {createCheckoutSession} from "@/components/premium/actions";
 
 const premiumFeatures = ["AI tools", "Up to 3 resumes"]
 const premiumPlusFeatures = ["Infinite resumes", "Design customizations"]
+const PRICE_PREMIUM = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PREMIUM_MONTHLY!;
+const PRICE_PREMIUM_PLUS = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PREMIUM_PLUS_MONTHLY!;
 
 const PremiumModal = () => {
 	const {open, setOpen} = usePremiumModal()
+	const [loading, setLoading] = useState<boolean>(false)
+
+	async function handlePremiumClick(priceId: string) {
+		try {
+			setLoading(true)
+			window.location.href = await createCheckoutSession(priceId)
+		} catch (e) {
+			console.error(e)
+			toast.error("", {
+				description: "Something went wrong. Please try again later.",
+			})
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogContent className="max-w-2xl">
+		<Dialog
+			open={open}
+			onOpenChange={(open) => {
+				if (!loading) {
+					setOpen(open)
+				}
+			}}
+		>
+			<DialogContent className="max-w-2xl" aria-description="Premium Modal">
 				<DialogHeader>
 					<DialogTitle>Resume Builder AI Premium</DialogTitle>
 				</DialogHeader>
@@ -32,7 +59,10 @@ const PremiumModal = () => {
 									</li>
 								))}
 							</ul>
-							<Button>
+							<Button
+								onClick={() => handlePremiumClick(PRICE_PREMIUM)}
+								disabled={loading}
+							>
 								Get Premium
 							</Button>
 						</div>
@@ -47,7 +77,11 @@ const PremiumModal = () => {
 									</li>
 								))}
 							</ul>
-							<Button variant="premium">
+							<Button
+								variant="premium"
+								onClick={() => handlePremiumClick(PRICE_PREMIUM_PLUS)}
+								disabled={loading}
+							>
 								Get Premium Plus
 							</Button>
 						</div>

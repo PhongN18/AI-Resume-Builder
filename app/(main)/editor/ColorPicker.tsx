@@ -3,6 +3,9 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
 import {PaletteIcon} from "lucide-react";
 import {useState} from "react";
+import {useSubscriptionLevel} from "@/app/(main)/SubscriptionLevelProvider";
+import usePremiumModal from "@/hooks/usePremiumModal";
+import { canUseCustomizations } from "@/lib/permissions";
 
 interface ColorPickerProps {
 	color: Color | undefined,
@@ -11,6 +14,8 @@ interface ColorPickerProps {
 
 const ColorPicker = ({color, onChange}: ColorPickerProps) => {
 	const [showPopover, setShowPopover] = useState(false);
+	const subscriptionLevel = useSubscriptionLevel()
+	const premiumModal = usePremiumModal()
 
 	return (
 		<Popover open={showPopover} onOpenChange={setShowPopover}>
@@ -18,7 +23,12 @@ const ColorPicker = ({color, onChange}: ColorPickerProps) => {
 				<Button
 			        size="icon"
 					title="Change resume color"
-					onClick={() => setShowPopover(true)}
+					onClick={() => {
+						if (!canUseCustomizations(subscriptionLevel)) {
+							premiumModal.setOpen(true)
+						}
+						setShowPopover(true)
+					}}
 				>
 					<PaletteIcon className="size-5" />
 				</Button>
