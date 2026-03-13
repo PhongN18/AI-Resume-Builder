@@ -9,6 +9,14 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
 	closestCenter,
 	DndContext,
 	DragEndEvent,
@@ -29,6 +37,21 @@ import { CSS } from "@dnd-kit/utilities"
 import {cn} from "@/lib/utils";
 import GenerateWorkExperienceButton from "@/app/(main)/editor/form/GenerateWorkExperienceButton";
 
+const MONTHS = [
+	{ value: 1, label: "January" },
+	{ value: 2, label: "February" },
+	{ value: 3, label: "March" },
+	{ value: 4, label: "April" },
+	{ value: 5, label: "May" },
+	{ value: 6, label: "June" },
+	{ value: 7, label: "July" },
+	{ value: 8, label: "August" },
+	{ value: 9, label: "September" },
+	{ value: 10, label: "October" },
+	{ value: 11, label: "November" },
+	{ value: 12, label: "December" },
+] as const;
+
 const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 	const form = useForm<WorkExperienceValues>({
 		resolver: zodResolver(workExperienceSchema),
@@ -36,8 +59,10 @@ const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 			workExperiences: (resumeData.workExperiences ?? []).map(exp => ({
 				position: exp.position ?? "",
 				company: exp.company ?? "",
-				startDate: exp.startDate ?? "",
-				endDate: exp.endDate ?? "",
+				startYear: exp.startYear ?? undefined,
+				startMonth: exp.startMonth ?? undefined,
+				endYear: exp.endYear ?? undefined,
+				endMonth: exp.endMonth ?? undefined,
 				description: exp.description ?? "",
 			})),
 		},
@@ -118,8 +143,10 @@ const WorkExperienceForm = ({ resumeData, setResumeData }: EditorFormProps) => {
 							onClick={() => append({
 								position: "",
 								company: "",
-								startDate: "",
-								endDate: "",
+								startYear: undefined,
+								startMonth: undefined,
+								endYear: undefined,
+								endMonth: undefined,
 								description: "",
 							})}
 						>
@@ -198,15 +225,20 @@ function WorkExperienceItem({ form, index, remove, id }: WorkExperienceItemProps
 			<div className="grid grid-cols-2 gap-3">
 				<FormField
 					control={form.control}
-					name={`workExperiences.${index}.startDate`}
+					name={`workExperiences.${index}.startYear`}
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Start date</FormLabel>
+							<FormLabel>Start year</FormLabel>
 							<FormControl>
 								<Input
 									{...field}
-									type="date"
-									value={field.value?.slice(0, 10)}
+									type="number"
+									placeholder="2025"
+									value={field.value ?? ""}
+									onChange={(e) => {
+										const v = e.target.value;
+										field.onChange(v === "" ? undefined : Number(v))
+									}}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -215,16 +247,84 @@ function WorkExperienceItem({ form, index, remove, id }: WorkExperienceItemProps
 				/>
 				<FormField
 					control={form.control}
-					name={`workExperiences.${index}.endDate`}
-					render={({field}) => (
+					name={`workExperiences.${index}.startMonth`}
+					render={({ field }) => (
 						<FormItem>
-							<FormLabel>End date</FormLabel>
+							<FormLabel>Start month (optional)</FormLabel>
+							<FormControl>
+								<Select
+									value={field.value?.toString() ?? ""}
+									onValueChange={(value) => {
+										field.onChange(value === "" ? undefined : Number(value));
+									}}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="— Month —" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											{MONTHS.map((m) => (
+												<SelectItem key={m.value} value={m.value.toString()}>
+													{m.label}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name={`workExperiences.${index}.endYear`}
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>End year</FormLabel>
 							<FormControl>
 								<Input
-									{...field}
-									type="date"
-									value={field.value?.slice(0, 10)}
+									type="number"
+									inputMode="numeric"
+									placeholder="2026"
+									value={field.value ?? ""}
+									onChange={(e) => {
+										const v = e.target.value;
+										field.onChange(v === "" ? undefined : Number(v));
+									}}
 								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
+					name={`workExperiences.${index}.endMonth`}
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>End month (optional)</FormLabel>
+							<FormControl>
+								<Select
+									value={field.value?.toString() ?? ""}
+									onValueChange={(value) => {
+										field.onChange(value === "" ? undefined : Number(value));
+									}}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="— Month —" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											{MONTHS.map((m) => (
+												<SelectItem key={m.value} value={m.value.toString()}>
+													{m.label}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -232,7 +332,7 @@ function WorkExperienceItem({ form, index, remove, id }: WorkExperienceItemProps
 				/>
 			</div>
 			<FormDescription>
-				Leave <span className="font-semibold">end date</span> empty if you are currently working here.
+				Leave <span className="font-semibold">end year and month</span> empty if you are currently working here.
 			</FormDescription>
 			<FormField
 				control={form.control}

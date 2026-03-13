@@ -84,6 +84,11 @@ const PersonalInfoForm = ({resumeData, setResumeData}: EditorFormProps) => {
 										type="button"
 										onClick={() => {
 											fieldValues.onChange(null)
+
+											setResumeData(prev => ({
+												...prev,
+												photo: null
+											}))
 											if (photoInputRef.current) {
 												photoInputRef.current.value = ""
 											}

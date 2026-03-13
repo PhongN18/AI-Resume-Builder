@@ -33,8 +33,10 @@ export const workExperienceSchema = z.object({
 		z.object({
 			position: z.string().trim().optional(),
 			company: z.string().trim().optional(),
-			startDate: z.string().trim().optional(),
-			endDate: z.string().trim().optional(),
+			startYear: z.number().min(1900).max(2100).optional(),
+			startMonth: z.number().min(1).max(12).optional(),
+			endYear: z.number().min(1900).max(2100).optional(),
+			endMonth: z.number().min(1).max(12).optional(),
 			description: z.string().trim().optional(),
 		})
 	).optional()
@@ -49,8 +51,10 @@ export const educationSchema = z.object({
 		z.object({
 			degree: z.string().trim().optional(),
 			school: z.string().trim().optional(),
-			startDate: z.string().trim().optional(),
-			endDate: z.string().trim().optional(),
+			startYear: z.number().min(1900).max(2100).optional(),
+			startMonth: z.number().min(1).max(12).optional(),
+			endYear: z.number().min(1900).max(2100).optional(),
+			endMonth: z.number().min(1).max(12).optional(),
 		})
 	).optional()
 })

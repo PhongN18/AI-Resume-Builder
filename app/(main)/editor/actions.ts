@@ -80,16 +80,20 @@ export async function saveResume(values: ResumeValues) {
 					deleteMany: {},
 					create: workExperiences?.map(exp => ({
 						...exp,
-						startDate: exp.startDate ? new Date(exp.startDate) : undefined,
-						endDate: exp.endDate ? new Date(exp.endDate) : undefined
+						startYear: exp.startYear ?? undefined,
+						startMonth: exp.startMonth ?? undefined,
+						endYear: exp.endYear ?? undefined,
+						endMonth: exp.endMonth ?? undefined,
 					})),
 				},
 				education: {
 					deleteMany: {},
 					create: education?.map(edu => ({
 						...edu,
-						startDate: edu.startDate ? new Date(edu.startDate) : undefined,
-						endDate: edu.endDate ? new Date(edu.endDate) : undefined
+						startYear: edu.startYear ?? undefined,
+						startMonth: edu.startMonth ?? undefined,
+						endYear: edu.endYear ?? undefined,
+						endMonth: edu.endMonth ?? undefined,
 					})),
 				},
 				skills:  skills?.filter((s): s is string => typeof s === "string" && s.trim().length > 0)
@@ -105,15 +109,19 @@ export async function saveResume(values: ResumeValues) {
 				workExperiences: {
 					create: workExperiences?.map(exp => ({
 						...exp,
-						startDate: exp.startDate ? new Date(exp.startDate) : undefined,
-						endDate: exp.endDate ? new Date(exp.endDate) : undefined
+						startYear: exp.startYear ?? undefined,
+						startMonth: exp.startMonth ?? undefined,
+						endYear: exp.endYear ?? undefined,
+						endMonth: exp.endMonth ?? undefined,
 					})),
 				},
 				education: {
 					create: education?.map(edu => ({
 						...edu,
-						startDate: edu.startDate ? new Date(edu.startDate) : undefined,
-						endDate: edu.endDate ? new Date(edu.endDate) : undefined
+						startYear: edu.startYear ?? undefined,
+						startMonth: edu.startMonth ?? undefined,
+						endYear: edu.endYear ?? undefined,
+						endMonth: edu.endMonth ?? undefined,
 					})),
 				},
 				skills:  skills?.filter((s): s is string => typeof s === "string" && s.trim().length > 0)

@@ -125,10 +125,9 @@ function WorkExperiencesSection({resumeData}: ResumeSectionProps) {
 					<div key={index} className="break-inside-avoid space-y-1">
 						<div style={{ color: colorHex }} className="flex items-center justify-between text-sm font-semibold">
 							<span>{exp.position}</span>
-							{exp.startDate && (
+							{exp.startYear && (
 								<span>
-									{formatDate(exp.startDate, "MM/yyyy")} -{" "}
-									{exp.endDate ? formatDate(exp.endDate, "MM/yyyy") : "Present"}
+									{exp.startMonth !== undefined ? (exp.startMonth + "/") : ""}{exp.startYear} - {exp.endYear ? `${exp.endMonth + "/" || ""}${exp.endYear}` : "Present" }
 								</span>
 							)}
 						</div>
@@ -158,10 +157,9 @@ function EducationSection({resumeData}: ResumeSectionProps) {
 					<div key={index} className="break-inside-avoid space-y-1">
 						<div style={{ color: colorHex }} className="flex items-center justify-between text-sm font-semibold">
 							<span>{edu.degree}</span>
-							{edu.startDate && (
+							{edu.startYear && (
 								<span>
-									{formatDate(edu.startDate, "MM/yyyy")}
-									{edu.endDate ? ` - ${formatDate(edu.endDate, "MM/yyyy")}` : ""}
+									{edu.startMonth + "/" || ""}{edu.startYear} - {edu.endYear ? `${edu.endMonth + "/" || ""}${edu.endYear}` : "Present" }
 								</span>
 							)}
 						</div>

@@ -27,6 +27,22 @@ import {
 import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities"
 import {cn} from "@/lib/utils";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+
+const MONTHS = [
+	{ value: 1, label: "January" },
+	{ value: 2, label: "February" },
+	{ value: 3, label: "March" },
+	{ value: 4, label: "April" },
+	{ value: 5, label: "May" },
+	{ value: 6, label: "June" },
+	{ value: 7, label: "July" },
+	{ value: 8, label: "August" },
+	{ value: 9, label: "September" },
+	{ value: 10, label: "October" },
+	{ value: 11, label: "November" },
+	{ value: 12, label: "December" },
+] as const;
 
 const EducationForm = ({resumeData, setResumeData}: EditorFormProps) => {
 	const form = useForm<EducationValues>({
@@ -110,8 +126,10 @@ const EducationForm = ({resumeData, setResumeData}: EditorFormProps) => {
 							onClick={() => append({
 								degree: "",
 								school: "",
-								startDate: "",
-								endDate: "",
+								startYear: undefined,
+								startMonth: undefined,
+								endYear: undefined,
+								endMonth: undefined,
 							})}
 						>
 							Add education
@@ -181,15 +199,20 @@ function EducationItem({ form, index, remove, id }: EducationItemProps) {
 			<div className="grid grid-cols-2 gap-3">
 				<FormField
 					control={form.control}
-					name={`education.${index}.startDate`}
+					name={`education.${index}.startYear`}
 					render={({field}) => (
 						<FormItem>
-							<FormLabel>Start date</FormLabel>
+							<FormLabel>Start year</FormLabel>
 							<FormControl>
 								<Input
 									{...field}
-									type="date"
-									value={field.value?.slice(0, 10)}
+									type="number"
+									placeholder="2025"
+									value={field.value ?? ""}
+									onChange={(e) => {
+										const v = e.target.value;
+										field.onChange(v === "" ? undefined : Number(v))
+									}}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -198,16 +221,84 @@ function EducationItem({ form, index, remove, id }: EducationItemProps) {
 				/>
 				<FormField
 					control={form.control}
-					name={`education.${index}.endDate`}
-					render={({field}) => (
+					name={`education.${index}.startMonth`}
+					render={({ field }) => (
 						<FormItem>
-							<FormLabel>End date</FormLabel>
+							<FormLabel>Start month (optional)</FormLabel>
+							<FormControl>
+								<Select
+									value={field.value?.toString() ?? ""}
+									onValueChange={(value) => {
+										field.onChange(value === "" ? undefined : Number(value));
+									}}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="— Month —" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											{MONTHS.map((m) => (
+												<SelectItem key={m.value} value={m.value.toString()}>
+													{m.label}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name={`education.${index}.endYear`}
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>End year</FormLabel>
 							<FormControl>
 								<Input
-									{...field}
-									type="date"
-									value={field.value?.slice(0, 10)}
+									type="number"
+									inputMode="numeric"
+									placeholder="2026"
+									value={field.value ?? ""}
+									onChange={(e) => {
+										const v = e.target.value;
+										field.onChange(v === "" ? undefined : Number(v));
+									}}
 								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				<FormField
+					control={form.control}
+					name={`education.${index}.endMonth`}
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>End month (optional)</FormLabel>
+							<FormControl>
+								<Select
+									value={field.value?.toString() ?? ""}
+									onValueChange={(value) => {
+										field.onChange(value === "" ? undefined : Number(value));
+									}}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="— Month —" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											{MONTHS.map((m) => (
+												<SelectItem key={m.value} value={m.value.toString()}>
+													{m.label}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
 							</FormControl>
 							<FormMessage />
 						</FormItem>

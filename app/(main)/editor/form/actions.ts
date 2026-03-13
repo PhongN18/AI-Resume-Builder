@@ -40,15 +40,19 @@ export async function generateSummary(input: GenerateSummaryInput) {
 		workExperiences: (workExperiences ?? []).map(e => ({
 			position: e.position ?? null,
 			company: e.company ?? null,
-			startDate: e.startDate ?? null,
-			endDate: e.endDate ?? null,
+			startYear: e.startYear ?? null,
+			startMonth: e.startMonth ?? null,
+			endYear: e.endYear ?? null,
+			endMonth: e.endMonth ?? null,
 			description: e.description ?? null,
 		})),
 		education: (education ?? []).map(e => ({
 			degree: e.degree ?? null,
 			school: e.school ?? null,
-			startDate: e.startDate ?? null,
-			endDate: e.endDate ?? null,
+			startYear: e.startYear ?? null,
+			startMonth: e.startMonth ?? null,
+			endYear: e.endYear ?? null,
+			endMonth: e.endMonth ?? null,
 		})),
 		skills: skills ?? [],
 	};
@@ -99,22 +103,33 @@ export async function generateWorkExperience(input: GenerateWorkExperienceInput)
 
 	const systemMessage = `
 		You are a resume assistant.
-		Given a short, messy user description, generate ONE work experience entry.
 		
-		Return ONLY valid JSON, no markdown, no extra text.
+		Given a short, messy user description, generate ONE work experience entry in JSON only.
+		
+		Return ONLY valid JSON that matches the exact schema below — no markdown, no code fences, no extra text, and no comments.
+		
 		Schema:
 		{
-		  "position": string,
-		  "company": string,
-		  "startDate": "YYYY-MM-DD" | '',
-		  "endDate": "YYYY-MM-DD" | '',
-		  "description": string // 3-5 bullet points, add newline and leading dash to separate
+			"position": string,
+			"company": string,
+			"startYear": number | null,
+			"startMonth": number | null,
+			"endYear": number | null,
+			"endMonth": number | null,
+			"description": string  // 3–5 bullet points separated by newline and starting with "-"
 		}
 		
 		Rules:
-		- Use only information from the user description. Do NOT invent technologies, companies, or dates.
-		- If start/end date is not explicitly present, set it to null.
-		- Bullet points should start with strong action verbs and be concise.
+		- Use ONLY information present in the user description.
+		- Do NOT invent companies, positions, technologies, dates, or responsibilities.
+		- If a date (year or month) is not present or cannot be reliably inferred, set that field to null.
+		- startYear, endYear, startMonth, and endMonth must be numbers (integers) or null.
+		- Months must be between 1 and 12 or null.
+		- If a month is provided, a year MUST also be provided.
+		  For example, {"startMonth": 6, "startYear": null} is invalid; in that case both should be null.
+		- The description field must contain 3–5 bullet points.
+		- Each bullet point must start with a strong action verb (e.g., "Developed", "Led", "Collaborated").
+		- Separate bullet points with a newline and a leading dash ("-").
 	`.trim();
 
 	const userMessage = `
